@@ -32,10 +32,16 @@ public class TimingAccumulator {
      * The number of times something was invoked.
      * Increment this counter at entry.
      */
-	public long accumulateInvocation()
+	public void accumulateInvocation()
 	{
 		invocationCount.incrementAndGet();
-		return System.nanoTime();
+	}
+	
+	public long accumulateInvocationStartTimer()
+	{
+		long r = System.nanoTime();
+		invocationCount.incrementAndGet();
+		return r;
 	}
 	
 	/**
@@ -66,7 +72,20 @@ public class TimingAccumulator {
         gracefulTerminates.incrementAndGet();
     }
  
+    public void accumulateOutcomeWithDelta(Outcome o, long delta)
+    {
+    	accumulateOutcome(o);
+        accumulateTimeSpent(delta);    	
+    }
+    
     public void accumulateOutcome(Outcome o, long startTime)
+    {
+    	accumulateOutcome(o);
+        long e = System.nanoTime();
+        accumulateTimeSpent(e - startTime);    	
+    }
+    
+    private void accumulateOutcome(Outcome o)
     {
     	switch(o)
     	{
@@ -80,8 +99,6 @@ public class TimingAccumulator {
     		accumulateFailure();
     		break;
     	}
-        long e = System.nanoTime();
-        accumulateTimeSpent(e - startTime);    	
     }
     
 	public long getInvocationCount()
@@ -112,13 +129,21 @@ public class TimingAccumulator {
     public long getInFlight()
     {
     	/* We can either choose to maintain yet another variable
-    	 * for counting any form of returns or add all the return counts
+    	 * for counting any form of returns or add all the return counts.
     	 * 
     	 * Having another variable implies yet another atomic increment
-    	 * Not having implies a sloppy answer
+    	 * Not having implies a sloppy answer.
     	 * 
-    	 * We choose the latter since by definition, this is a shaky metric
+    	 * We choose the latter since by definition, this is a shaky metric.
+    	 * 
+    	 * As long as callers code accumulateInvocation() with exactly one
+    	 * accumulateOutcome()/accumulateOutcomeDelta() following it, the
+    	 * result shall remain non-negative.
+    	 * 
+    	 * Since this is a gauge and not a running counter, by definition,
+    	 * the values is allowed to fluctuate across readings in a busy system
     	 */
+
     	return getInvocationCount() - 
     		(getSuccessCount() + getGracefulTerminates() + getUnhandledExceptionCount());
     }
