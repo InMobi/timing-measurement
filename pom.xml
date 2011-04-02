@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.inmobi.instrumentation</groupId>
 	<artifactId>timing-measurement</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<build>
 		<defaultGoal>install</defaultGoal>
@@ -37,8 +37,8 @@
 	</build>
 	<distributionManagement>
 		<repository>
-			<id>releases</id>
-			<url>http://build.corp.inmobi.com/nexus/content/repositories/releases</url>
+			<id>snapshots</id>
+			<url>http://build.corp.inmobi.com/nexus/content/repositories/snapshots</url>
 		</repository>
 	</distributionManagement>	
 </project>
