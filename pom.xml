@@ -38,7 +38,7 @@
 	<distributionManagement>
 		<repository>
 			<id>snapshots</id>
-			<url>http://build.corp.inmobi.com/nexus/content/repositories/snapshots/url>
+			<url>http://build.corp.inmobi.com/nexus/content/repositories/snapshots</url>
 		</repository>
 	</distributionManagement>	
 </project>
